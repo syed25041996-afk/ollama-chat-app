@@ -20,8 +20,10 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           script: |
-            cd /opt/ollama-local-connect
-            git pull origin main
-            docker-compose down
-            docker-compose up -d --build
-            docker image prune -f
+            # write your deployment commands here
+            echo "Deploy commands go here"
+            # cd /opt/ollama-local-connect
+            # git pull origin main
+            # docker-compose down
+            # docker-compose up -d --build
+            # docker image prune -f
