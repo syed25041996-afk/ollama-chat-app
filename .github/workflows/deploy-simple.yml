@@ -2,28 +2,19 @@ name: Deploy to Server
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: 192.168.1.108
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: 22
-          script: |
-            # write your deployment commands here
-            echo "Deploy commands go here"
-            # cd /opt/ollama-local-connect
-            # git pull origin main
-            # docker-compose down
-            # docker-compose up -d --build
-            # docker image prune -f
+        run: |
+          echo "Deploying to server..."
+          # Add your deployment commands here
+          ssh -vvv home@0.tcp.in.ngrok.io -p 16809
+          echo "Deployment complete."
