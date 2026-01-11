@@ -12,12 +12,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Add SSH host key
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p 16809 0.tcp.in.ngrok.io >> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null\n" > ~/.ssh/config
 
       - name: Run command on server
         run: |
-          ssh home@0.tcp.in.ngrok.io -p 16809 \
-          "echo 'Hello from server'"
+          ssh -i ~/.ssh/id_ed25519 \
+              home@0.tcp.in.ngrok.io -p 16809 \
+              "echo '✅ Secure deployment from GitHub Actions'"
