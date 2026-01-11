@@ -16,5 +16,5 @@ jobs:
         run: |
           echo "Deploying to server..."
           # Add your deployment commands here
-          ssh -vvv home@0.tcp.in.ngrok.io -p 16809
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null home@0.tcp.in.ngrok.io -p 16809 "echo 'Hello from server'"
           echo "Deployment complete."
