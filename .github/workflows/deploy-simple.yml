@@ -12,9 +12,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Deploy to server
+      - name: Add SSH host key
         run: |
-          echo "Deploying to server..."
-          # Add your deployment commands here
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null home@0.tcp.in.ngrok.io -p 16809 "echo 'Hello from server'"
-          echo "Deployment complete."
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 16809 0.tcp.in.ngrok.io >> ~/.ssh/known_hosts
+
+      - name: Run command on server
+        run: |
+          ssh home@0.tcp.in.ngrok.io -p 16809 \
+          "echo 'Hello from server'"
