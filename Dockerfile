@@ -21,4 +21,4 @@ COPY --from=build /app/dist /usr/share/nginx/html/ollama-ui
 
 EXPOSE 80
 
-CMD ["npm", "dev"]
+CMD ["npm","run", "dev"]
