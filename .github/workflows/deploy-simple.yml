@@ -24,3 +24,9 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 \
               home@0.tcp.in.ngrok.io -p 16809 \
               "echo '✅ Secure deployment from GitHub Actions'"
+
+      - name: Run deploy script on server
+        run: |
+          ssh -i ~/.ssh/id_ed25519 \
+              home@0.tcp.in.ngrok.io -p 16809 \
+              "cd /home/home/apps/ollama-chat-app && ./deploy.sh"
