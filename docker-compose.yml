@@ -1,54 +1,23 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  # Ollama Local Connect Frontend
-  ollama-gui:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: runner
+  frontend:
+    build: .
+    container_name: ollama-ui
     ports:
-      - "8080:8080"
-    environment:
-      - NODE_ENV=production
-      - PORT=8080
-    volumes:
-      # Optional: Mount config directory for persistent settings
-      - ./config:/app/config
+      - "3000:80"
+    depends_on:
+      - ollama
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    networks:
-      - ollama-network
 
-  # Development version (optional)
-  ollama-gui-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: dev
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
     ports:
-      - "8081:8081"
+      - "11434:11434"
     volumes:
-      - .:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=development
-      - PORT=8081
-    command: npm run dev
-    profiles:
-      - dev
-    networks:
-      - ollama-network
-
-networks:
-  ollama-network:
-    driver: bridge
+      - ollama:/root/.ollama
+    restart: unless-stopped
 
 volumes:
-  # Optional: Persistent volume for configuration
-  config:
+  ollama:

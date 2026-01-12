@@ -1,36 +1,24 @@
-# Multi-stage build for optimal Docker image size
-FROM node:20-alpine AS base
+# -------- Build stage --------
+FROM node:18-alpine AS build
 
-# Install dependencies only when needed
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat python3 make g++
 WORKDIR /app
 
-# Copy package.json and package-lock.json
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install
 
-# Development image
-FROM base AS dev
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN npm run build
 
-# Production image
-FROM base AS runner
-WORKDIR /app
+# -------- Runtime stage --------
+FROM nginx:alpine
 
-ENV NODE_ENV production
+# Use your existing nginx config (safe)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy built application
-COPY --from=deps /app/node_modules ./node_modules
-COPY dist ./dist
+# IMPORTANT:
+# Copy build output into a SUBFOLDER, not root
+COPY --from=build /app/dist /usr/share/nginx/html/ollama-ui
 
-EXPOSE 8080
+EXPOSE 80
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
-
-CMD ["node", "dist/index.js"]
+CMD ["nginx", "-g", "daemon off;"]
