@@ -22,11 +22,11 @@ jobs:
       - name: Run command on server
         run: |
           ssh -i ~/.ssh/id_ed25519 \
-              home@0.tcp.in.ngrok.io -p 15474 \
+              home@0.tcp.in.ngrok.io -p 14578 \
               "echo '✅ Secure deployment from GitHub Actions'"
 
       - name: Run deploy script on server
         run: |
           ssh -i ~/.ssh/id_ed25519 \
-              home@0.tcp.in.ngrok.io -p 15474 \
+              home@0.tcp.in.ngrok.io -p 14578 \
               "cd /home/home/apps/ollama-chat-app && chmod +x deploy.sh && ./deploy.sh"
