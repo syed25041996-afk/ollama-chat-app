@@ -6,7 +6,8 @@ import {
 } from '@/types/ollama';
 
 export const getBaseUrl = (settings: OllamaSettings): string => {
-  return `http://localhost:11434`;
+  console.log('settings', settings)
+  return `http://${settings.host}:${settings.port}`;
 };
 
 export const ollamaApi = {
