@@ -1,26 +1,15 @@
-version: "3.9"
+echo "Starting deployment process..."
+# Pull the latest changes from the repository
+git pull origin main
 
-services:
-  frontend:
-    build: .
-    container_name: ollama-ui
-    ports:
-      - "5000:80"
-    depends_on:
-      - ollama
-    restart: unless-stopped
+# Bring down the existing Docker containers
+echo "Stopping existing Docker containers..."
+docker-compose down
 
-  ollama:
-    image: ollama/ollama
-    container_name: ollama
-    ports:
-      - "11434:11434"
-    environment:
-      - OLLAMA_HOST=0.0.0.0
-      - OLLAMA_ORIGINS=*
-    volumes:
-      - ollama:/root/.ollama
-    restart: unless-stopped
+# Build and start the Docker containers
+echo "Building and starting Docker containers..."
+docker-compose up --build -d
 
-volumes:
-  ollama:
+# Verfiy that the containers are running
+echo "Verifying Docker containers..."
+docker-compose ps
