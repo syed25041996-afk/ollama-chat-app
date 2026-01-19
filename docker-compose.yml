@@ -15,6 +15,9 @@ services:
     container_name: ollama
     ports:
       - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_ORIGINS=*
     volumes:
       - ollama:/root/.ollama
     restart: unless-stopped
