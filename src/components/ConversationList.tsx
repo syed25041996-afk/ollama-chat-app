@@ -10,6 +10,7 @@ interface ConversationListProps {
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onNew: () => void;
+  disabled?: boolean;
 }
 
 export const ConversationList = ({
@@ -18,6 +19,7 @@ export const ConversationList = ({
   onSelect,
   onDelete,
   onNew,
+  disabled = false,
 }: ConversationListProps) => {
   return (
     <div className="flex flex-col h-full">
@@ -25,6 +27,7 @@ export const ConversationList = ({
         <Button
           onClick={onNew}
           className="w-full justify-start gap-2 glow-primary"
+          // disabled={disabled}
         >
           <Plus className="h-4 w-4" />
           New Chat

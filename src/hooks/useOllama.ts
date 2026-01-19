@@ -8,8 +8,9 @@ import {
   ChatMessage,
   FileAttachment
 } from '@/types/ollama';
-import { ollamaApi } from '@/lib/ollama';
+import { ollamaApi } from '@/lib/api/ollama';
 import { storage } from '@/lib/storage';
+import useConversationsStore from '../stores/conversations';
 
 export const useOllama = () => {
   const [settings, setSettings] = useState<OllamaSettings>(storage.getSettings);

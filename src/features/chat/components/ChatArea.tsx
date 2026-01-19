@@ -1,27 +1,19 @@
 import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ChatMessage } from '@/components/ChatMessage';
-import { ChatInput } from '@/components/ChatInput';
-import { EmptyState } from '@/components/EmptyState';
-import { Conversation, FileAttachment } from '@/types/ollama';
+import { ChatMessage, ChatInput, EmptyState } from './index';
+import { Conversation } from '@/features/conversations/types';
+import { FileAttachment } from '../types';
+import { useChat } from '../hooks';
 
 interface ChatAreaProps {
   conversation: Conversation | null;
-  onSend: (message: string, attachments?: FileAttachment[]) => void;
-  onStop: () => void;
-  isStreaming: boolean;
   hasModel: boolean;
 }
 
-export const ChatArea = ({
-  conversation,
-  onSend,
-  onStop,
-  isStreaming,
-  hasModel,
-}: ChatAreaProps) => {
+export const ChatArea = ({ conversation, hasModel }: ChatAreaProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { sendMessage, stopStreaming, isStreaming, error } = useChat();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -32,6 +24,14 @@ export const ChatArea = ({
   if (!conversation) {
     return <EmptyState />;
   }
+
+  const handleSend = (message: string, attachments?: FileAttachment[]) => {
+    sendMessage(message, attachments);
+  };
+
+  const handleStop = () => {
+    stopStreaming();
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -51,9 +51,9 @@ export const ChatArea = ({
             <div className="divide-y divide-border/50">
               {conversation.messages.map((message, index) => (
                 <ChatMessage
-                  key={index}
+                  key={`${message.role}-${index}`}
                   message={message}
-                  isStreaming={isStreaming && index === conversation.messages.length - 1}
+                  isStreaming={isStreaming && index === conversation.messages.length - 1 && message.role === 'assistant'}
                 />
               ))}
             </div>
@@ -63,10 +63,11 @@ export const ChatArea = ({
 
       <div className="max-w-4xl mx-auto w-full px-4 pb-4">
         <ChatInput
-          onSend={(message, attachments) => onSend(message, attachments)}
-          onStop={onStop}
+          onSend={handleSend}
+          onStop={handleStop}
           isStreaming={isStreaming}
           disabled={!hasModel}
+          error={error}
         />
       </div>
     </div>

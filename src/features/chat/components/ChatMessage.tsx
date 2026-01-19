@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { User, Bot, Copy, Check, Paperclip, Download, Eye } from 'lucide-react';
 import { useState } from 'react';
-import { ChatMessage as Message, FileAttachment } from '@/types/ollama';
+import { ChatMessage as Message, FileAttachment } from '../types';
 import { Button } from '@/components/ui/button';
 
 interface ChatMessageProps {

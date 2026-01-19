@@ -1,13 +1,13 @@
 import {
-  OllamaModelListResponse,
-  ChatMessage,
+  OllamaModel,
+  ChatParams,
   OllamaSettings,
   PullProgress
 } from '@/types/ollama';
 
 export const getBaseUrl = (settings: OllamaSettings): string => {
-  console.log('settings', settings)
-  return `http://home.tail2b1f38.ts.net:11434`;
+  return `http://home.tail2b1f38.ts.net:11434/`
+  return `${settings.host}:${settings.port}`;
 };
 
 export const ollamaApi = {
@@ -23,7 +23,7 @@ export const ollamaApi = {
     }
   },
 
-  async listModels(settings: OllamaSettings): Promise<OllamaModelListResponse> {
+  async listModels(settings: OllamaSettings): Promise<{ models: OllamaModel[] }> {
     const response = await fetch(`${getBaseUrl(settings)}/api/tags`);
     if (!response.ok) {
       throw new Error(`Failed to fetch models: ${response.statusText}`);
@@ -85,7 +85,7 @@ export const ollamaApi = {
   async *streamChat(
     settings: OllamaSettings,
     model: string,
-    messages: ChatMessage[],
+    messages: Array<{ role: string; content: string; attachments?: Array<{ name: string; type: string; size: number }> }>,
     signal?: AbortSignal
   ): AsyncGenerator<string> {
     // Process messages to include file content

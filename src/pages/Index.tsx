@@ -4,12 +4,12 @@ import { Bot, Menu, X, RefreshCw, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useOllama } from "@/hooks/useOllama";
 import { useResponsiveSidebar } from "@/hooks/useResponsiveSidebar";
-import { ConnectionStatus } from "@/components/ConnectionStatus";
+import { ConnectionStatusComponent } from "@/features/models/components/ConnectionStatus";
 import { SettingsDialog } from "@/components/SettingsDialog";
-import { ModelSelector } from "@/components/ModelSelector";
-import { PullModelDialog } from "@/components/PullModelDialog";
-import { ConversationList } from "@/components/ConversationList";
-import { ChatArea } from "@/components/ChatArea";
+import { ModelSelector } from "@/features/models/components/ModelSelector";
+import { PullModelDialog } from "@/features/models/components/PullModelDialog";
+import { ConversationList } from "@/features/conversations/components/ConversationList";
+import { ChatArea } from "@/features/chat/components";
 
 const Index = () => {
   const { isMobile, sidebarOpen, toggleSidebar, closeSidebar, shouldShowSidebar } = useResponsiveSidebar();
@@ -29,6 +29,7 @@ const Index = () => {
   const handleNewChat = () => {
     if (models.length > 0) {
       createConversation(models[0].name);
+      closeSidebar();
     }
   };
 
@@ -36,6 +37,11 @@ const Index = () => {
     if (!activeConversation) {
       createConversation(modelName);
     }
+  };
+
+  const handleRenameConversation = (id: string, title: string) => {
+    // TODO: Implement rename functionality
+    console.log('Rename conversation', id, title);
   };
 
   return (
@@ -61,12 +67,14 @@ const Index = () => {
 
           {/* Conversations */}
           <div className="flex-1 overflow-hidden">
-            <ConversationList 
-              conversations={conversations} 
-              activeId={activeConversationId} 
-              onSelect={setActiveConversationId} 
-              onDelete={deleteConversation} 
-              onNew={handleNewChat} 
+            <ConversationList
+              conversations={conversations}
+              activeId={activeConversationId}
+              onSelect={setActiveConversationId}
+              onDelete={deleteConversation}
+              onNew={handleNewChat}
+              onRename={handleRenameConversation}
+              disabled={models.length === 0}
             />
           </div>
         </div>
@@ -95,12 +103,10 @@ const Index = () => {
             </Button>
 
             <div className="hidden sm:block w-64">
-              <ModelSelector 
-                models={models} 
-                selectedModel={activeConversation?.model || null} 
-                onSelect={handleModelSelect} 
-                onDelete={deleteModel} 
-                disabled={isStreaming} 
+              <ModelSelector
+                selectedModel={activeConversation?.model || null}
+                onSelect={handleModelSelect}
+                disabled={isStreaming}
               />
             </div>
 
@@ -127,31 +133,26 @@ const Index = () => {
             >
               <RefreshCw className="h-4 w-4" />
             </Button>
-            <PullModelDialog onPull={pullModel} isPulling={isPulling} progress={pullProgress} />
-            <ConnectionStatus status={connectionStatus} onRefresh={checkConnection} />
+            <PullModelDialog />
+            <ConnectionStatusComponent />
             <SettingsDialog settings={settings} onSave={updateSettings} onCheck={checkConnection} />
           </div>
         </header>
 
         {/* Mobile Model Selector */}
         <div className="sm:hidden p-3 border-b border-border bg-card/30 sticky top-16 z-10">
-          <ModelSelector 
-            models={models} 
-            selectedModel={activeConversation?.model || null} 
-            onSelect={handleModelSelect} 
-            onDelete={deleteModel} 
-            disabled={isStreaming} 
+          <ModelSelector
+            selectedModel={activeConversation?.model || null}
+            onSelect={handleModelSelect}
+            disabled={isStreaming}
           />
         </div>
 
         {/* Chat Area */}
         <main className="flex-1 overflow-hidden">
-          <ChatArea 
-            conversation={activeConversation} 
-            onSend={sendMessage} 
-            onStop={stopStreaming} 
-            isStreaming={isStreaming} 
-            hasModel={!!activeConversation?.model} 
+          <ChatArea
+            conversation={activeConversation}
+            hasModel={connectionStatus === "connected" && models.length > 0}
           />
         </main>
       </div>
