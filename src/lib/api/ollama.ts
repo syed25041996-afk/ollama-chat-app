@@ -6,7 +6,7 @@ import {
 } from '@/types/ollama';
 
 export const getBaseUrl = (settings: OllamaSettings): string => {
-  return `http://home.tail2b1f38.ts.net:11434/`
+  return `http://home.tail2b1f38.ts.net:11434`
   return `${settings.host}:${settings.port}`;
 };
 
