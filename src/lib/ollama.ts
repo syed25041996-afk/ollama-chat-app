@@ -7,7 +7,7 @@ import {
 
 export const getBaseUrl = (settings: OllamaSettings): string => {
   console.log('settings', settings)
-  return `http://${settings.host}:${settings.port}`;
+  return `http://home.tail2b1f38.ts.net:11434`;
 };
 
 export const ollamaApi = {

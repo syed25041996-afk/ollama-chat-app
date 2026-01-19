@@ -38,7 +38,7 @@ docker-compose ps
 # Optional: Run health checks
 echo "🏥 Running health checks..."
 # Check API health
-if curl -f http://localhost:3000/health > /dev/null 2>&1; then
+if curl -f http://localhost:11434 > /dev/null 2>&1; then
     echo "✅ API is healthy"
 else
     echo "❌ API health check failed"
@@ -46,7 +46,7 @@ else
 fi
 
 # Check frontend (basic check)
-if curl -f http://localhost:4200 > /dev/null 2>&1; then
+if curl -f http://localhost:5000 > /dev/null 2>&1; then
     echo "✅ Frontend is accessible"
 else
     echo "❌ Frontend check failed"
