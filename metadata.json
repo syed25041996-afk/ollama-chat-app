@@ -1,0 +1,5 @@
+{
+  "name": "Ollama Universal UI",
+  "description": "A modern, responsive web interface for local Ollama instances supporting multi-modal chat (text, images, video frames) and dynamic model switching.",
+  "requestFramePermissions": []
+}

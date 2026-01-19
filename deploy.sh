@@ -1,53 +1,26 @@
-#!/bin/bash
+version: "3.9"
 
-set -e
+services:
+  frontend:
+    build: .
+    container_name: ollama-ui
+    ports:
+      - "5000:80"
+    depends_on:
+      - ollama
+    restart: unless-stopped
 
-echo "🚀 Starting deployment of Ollama application..."
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_ORIGINS=*
+    volumes:
+      - ollama:/root/.ollama
+    restart: unless-stopped
 
-# Navigate to the project directory (assuming script is run from project root)
-cd "$(dirname "$0")"
-
-# Pull latest changes from the repository
-echo "📥 Pulling latest changes from Git repository..."
-git pull
-
-# Stop and remove existing containers
-echo "🛑 Stopping existing containers..."
-docker-compose down
-
-# Pull latest base images
-echo "📥 Pulling latest base images..."
-docker-compose pull
-
-# Build custom images
-echo "🔨 Building application images..."
-docker-compose build --no-cache
-
-# Start services in detached mode
-echo "▶️  Starting services..."
-docker-compose up -d
-
-# Wait for services to be healthy
-echo "⏳ Waiting for services to be ready..."
-sleep 10
-
-# Check if services are running
-echo "🔍 Checking service status..."
-docker-compose ps
-
-# Optional: Run health checks
-echo "🏥 Running health checks..."
-# Check API health
-if curl -f http://localhost:11434 > /dev/null 2>&1; then
-    echo "✅ API is healthy"
-else
-    echo "❌ API health check failed"
-    exit 1
-fi
-
-# Check frontend (basic check)
-if curl -f http://localhost:5000 > /dev/null 2>&1; then
-    echo "✅ Frontend is accessible"
-else
-    echo "❌ Frontend check failed"
-fi
+volumes:
+  ollama:
