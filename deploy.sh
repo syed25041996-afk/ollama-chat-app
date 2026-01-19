@@ -1,6 +1,6 @@
 echo "Starting deployment process..."
 # Pull the latest changes from the repository
-git pull origin main
+git pull
 
 # Bring down the existing Docker containers
 echo "Stopping existing Docker containers..."
